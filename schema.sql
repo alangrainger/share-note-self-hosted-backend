@@ -24,20 +24,6 @@ CREATE TABLE `files` (
 -- --------------------------------------------------------
 
 --
--- Table structure for table `users`
---
-
-CREATE TABLE `users` (
-                         `id` int NOT NULL,
-                         `hash_id` char(32) NOT NULL,
-                         `created` datetime NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
-
---
--- Indexes for dumped tables
---
-
---
 -- Indexes for table `files`
 --
 ALTER TABLE `files`
@@ -49,26 +35,9 @@ ALTER TABLE `files`
   ADD KEY `filetype` (`filetype`);
 
 --
--- Indexes for table `users`
---
-ALTER TABLE `users`
-    ADD PRIMARY KEY (`id`),
-  ADD UNIQUE KEY `hash_id` (`hash_id`),
-  ADD KEY `created` (`created`);
-
---
--- AUTO_INCREMENT for dumped tables
---
-
---
 -- AUTO_INCREMENT for table `files`
 --
 ALTER TABLE `files`
     MODIFY `id` int NOT NULL AUTO_INCREMENT;
 
---
--- AUTO_INCREMENT for table `users`
---
-ALTER TABLE `users`
-    MODIFY `id` int NOT NULL AUTO_INCREMENT;
 COMMIT;

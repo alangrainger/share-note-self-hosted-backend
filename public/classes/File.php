@@ -169,7 +169,7 @@ class File extends Controller
         }
     }
 
-    function checkFiles(): object
+    function checkFiles(): void
     {
         $result = [];
 
@@ -177,20 +177,21 @@ class File extends Controller
         foreach ($this->getPost('files') as $file) {
             $res = $this->checkFile($file->hash, $file->filetype);
             $file->url = $res->url;
+			$result[] = $file;
         }
 
         // Get the info on the user's CSS (if exists)
         $css = new DB\SQL\Mapper($this->db, 'files');
         $css->load(array('filename=? AND filetype=?', $this->user->id, 'css'));
 
-        return (object)[
+        $this->success([
             'success' => true,
             'files' => $result,
             'css' => !$css->valid() ? null : (object)[
                 'url' => $this->getUrl(),
                 'hash' => $css->hash
             ]
-        ];
+        ]);
     }
 
     /**
