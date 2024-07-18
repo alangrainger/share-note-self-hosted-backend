@@ -24,8 +24,8 @@ class File extends Controller {
 
 	private \DB\SQL\Mapper $file;
 	private string $hash;
-	private string $filename;
-	private string $extension;
+	private string $filename = '';
+	private string $extension = '';
 	private bool $initialised = false;
 
 	function __construct() {
@@ -41,26 +41,29 @@ class File extends Controller {
 		}
 
 		// All requests must include the SHA1 (40 chars)
-		$this->hash = $this->getPost( 'hash' ) ?? '';
+		$this->hash = $this->headers['X-Sharenote-Hash'] ?? $this->getPost( 'hash' ) ?? '';
 		if ( strlen( $this->hash ) !== 40 || preg_match( "/[^a-f0-9]/", $this->hash ) ) {
 			$this->errorAndDie( 400 ); // Bad request
 		}
 
-		// Filename must be alphanumeric and match the hash length
-		$this->filename = preg_replace( "/[^a-z0-9]/", '', $this->getPost( 'filename' ) );
-		if ( strlen( $this->filename ) !== self::HASH_LENGTH ) {
-			$this->errorAndDie( 400 ); // Bad request
-		}
-
 		// File extension must be in our whitelist
-		$this->extension = strtolower( $this->getPost( 'filetype' ) );
+		$extension       = $this->headers['X-Sharenote-Filetype'] ?? $this->getPost( 'filetype' ) ?? '';
+		$this->extension = strtolower( $extension );
 		if ( ! in_array( $this->extension, self::WHITELIST ) ) {
 			$this->errorAndDie( 415 ); // Unsupported media type
 		}
 
 		// Load the file if exists
+		$filename   = $this->getPost( 'filename' ) ?? $this->createRandomName();
 		$this->file = new DB\SQL\Mapper( $this->db, 'files' );
-		$this->file->load( array( 'filename=? AND filetype=?', $this->filename, $this->extension ) );
+		if ( $this->extension === 'html' ) {
+			$this->file->load( array( 'filename=? AND filetype=?', $filename, $this->extension ) );
+		} elseif ( $this->extension === 'css' ) {
+			$this->filename = $this->user->id;
+			$this->file->load( array( 'filename=? AND filetype=?', $filename, $this->extension ) );
+		} else {
+			$this->file->load( array( 'hash=? AND filetype=?', $this->hash, $this->extension ) );
+		}
 
 		$this->initialised = true;
 	}
@@ -205,5 +208,17 @@ class File extends Controller {
 			'css' => 'css',
 			default => 'files',
 		};
+	}
+
+	function createRandomName( $extension = null ) {
+		$extension = $extension ?? $this->extension;
+		$length    = $extension === 'html' ? 8 : 20;
+		$chars     = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
+		$name      = '';
+		for ( $i = 0; $i < $length; $i ++ ) {
+			$name .= $chars[ rand( 0, strlen( $chars ) - 1 ) ];
+		}
+
+		return $name;
 	}
 }

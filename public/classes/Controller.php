@@ -6,42 +6,28 @@ class Controller {
 	protected object $json_post_data;
 	protected object $user;
 	protected array $headers;
-	protected bool $isForm = false;
-	protected bool $isJson = false;
 
 	function __construct() {
-		$this->f3 = Base::instance();
-		$this->db = new DB\SQL(
+		$this->f3      = Base::instance();
+		$this->db      = new DB\SQL(
 			"mysql:host={$this->f3->get('db_host')};port=3306;dbname={$this->f3->get('db_name')}",
 			$this->f3->get( 'db_user' ),
 			$this->f3->get( 'db_pass' )
 		);
-		$this->headers = $this->f3->get('HEADERS');
+		$this->headers = $this->f3->get( 'HEADERS' );
 
 		// Populate the post_data object depending on POST method
-		$contentType = $this->headers['Content-Type'] ?? $this->headers['Content_Type'] ?? '';
-		if ( str_contains( $contentType, 'application/json' ) ) {
-			$this->isJson = true;
+		if ( str_contains( $this->headers['Content-Type'] ?? '', 'application/json' ) ) {
 			try {
 				$this->json_post_data = json_decode( file_get_contents( "php://input" ) );
 			} catch ( Throwable ) {
 				$this->json_post_data = (object) [];
 			}
-		} elseif ( str_contains( $contentType, 'multipart/form-data' ) ) {
-			$this->isForm = true;
 		}
 	}
 
 	function getPost( $property ) {
-		if ( $this->isForm ) {
-			// FormData POST
-			return $_POST[ $property ] ?? null;
-		} elseif ( $this->isJson ) {
-			// JSON POST
-			return $this->json_post_data->{$property} ?? null;
-		}
-
-		return null;
+		return $this->json_post_data->{$property} ?? null;
 	}
 
 	function shortHash( $data ): string {
@@ -58,9 +44,9 @@ class Controller {
 	 * Checks for an authenticated user, and will die() if none found
 	 */
 	function checkValidUser( $statusCode = 401 ): void {
-		$uid     = $this->headers['X-Sharenote-Id'] ?? null;
-		$hash    = $this->headers['X-Sharenote-Key'] ?? null;
-		$nonce   = $this->headers['X-Sharenote-Nonce'] ?? null;
+		$uid   = $this->headers['X-Sharenote-Id'] ?? null;
+		$hash  = $this->headers['X-Sharenote-Key'] ?? null;
+		$nonce = $this->headers['X-Sharenote-Nonce'] ?? null;
 
 		if ( ! is_string( $uid ) || ! is_string( $hash ) ) {
 			$this->errorAndDie( $statusCode ); // Unauthorised
@@ -108,7 +94,7 @@ class Controller {
 	 */
 	function success( array $data = [] ): void {
 		$data['success'] = true;
-		$data['a'] = json_encode($this->headers);
+		$data['a']       = json_encode( $this->headers );
 		echo json_encode( $data );
 		exit();
 	}
@@ -116,7 +102,7 @@ class Controller {
 	function failure(): void {
 		echo json_encode( [
 			'success' => false,
-			'a'=>$this->headers
+			'a'       => $this->headers
 		] );
 		die();
 	}
