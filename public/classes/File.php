@@ -12,13 +12,15 @@ class File extends Controller {
 		'webp',
 		'svg',
 		'gif',
+		// Video
+		'webm',
 		// Fonts
 		'ttf',
 		'otf',
 		'woff',
 		'woff2'
 	];
-	const HASH_LENGTH = 32;
+	const HASH_LENGTH = 20;
 
 	private \DB\SQL\Mapper $file;
 	private string $hash;
@@ -84,8 +86,8 @@ class File extends Controller {
 			$this->file->filetype = strtolower( $this->extension );
 			$this->file->created  = $date;
 		}
-		$this->file->updated   = $date;
-		$this->file->bytes     = filesize( $filename );
+		$this->file->updated = $date;
+		$this->file->bytes   = filesize( $filename );
 		$this->file->save();
 	}
 
@@ -116,10 +118,17 @@ class File extends Controller {
 	/**
 	 * Gets the sub-path to the file, excluding domain or local storage location.
 	 * Used by getFilePath() and getUrl()
+	 *
+	 * @param $filename
+	 * @param $extension
+	 *
 	 * @return string
 	 */
-	function getSubPath(): string {
-		return "/{$this->getSubfolder($this->extension)}/$this->filename.$this->extension";
+	function getSubPath( $filename = null, $extension = null ): string {
+		$filename  = $filename ?? $this->filename;
+		$extension = $extension ?? $this->extension;
+
+		return "/{$this->getSubfolder($extension)}/$filename.$extension";
 	}
 
 	/**
@@ -132,35 +141,44 @@ class File extends Controller {
 
 	/**
 	 * Get the public URL of the file
+	 *
+	 * @param  null  $filename
+	 * @param  null  $extension
+	 *
 	 * @return string
 	 */
-	function getUrl(): string {
-		return $this->f3->get( 'file_url_base' ) . $this->getSubPath();
+	function getUrl( $filename = null, $extension = null ): string {
+		return $this->f3->get( 'file_url_base' ) . $this->getSubPath( $filename, $extension );
 	}
 
-	function checkFile( $hash, $extension ): object {
+	/**
+	 * Check whether a file already exists in the DB
+	 *
+	 * @param $hash
+	 * @param $extension
+	 *
+	 * @return string|null
+	 */
+	function checkFile( $hash, $extension ): ?string {
 		$fileDb = new DB\SQL\Mapper( $this->db, 'files' );
-		$fileDb->load( array( 'filename=? AND filetype=?', $hash, $extension ) );
+		$fileDb->load( array( 'hash=? AND filetype=?', $hash, $extension ) );
 		if ( $fileDb->valid() ) {
-			return (object) [
-				'success' => true,
-				'url'     => $url ?? $this->getUrl()
-			];
-		} else {
-			return (object) [
-				'success' => false,
-				'url'     => null
-			];
+			return $this->getUrl( $fileDb->filename, $fileDb->extension );
 		}
+
+		return null;
 	}
 
+	/**
+	 * Pre-check a list of incoming files to see whether they need to be uploaded
+	 * @return void
+	 */
 	function checkFiles(): void {
 		$result = [];
 
-		// Check the incoming files
+		// Check the incoming files to see if they already exist
 		foreach ( $this->getPost( 'files' ) as $file ) {
-			$res       = $this->checkFile( $file->hash, $file->filetype );
-			$file->url = $res->url;
+			$file->url = $this->checkFile( $file->hash, $file->filetype );
 			$result[]  = $file;
 		}
 
