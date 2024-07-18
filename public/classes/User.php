@@ -5,7 +5,7 @@ class User extends Controller
     function getKey(): void
     {
         // Check the incoming UID value
-        $uid = $this->getPost('id');
+        $uid = $this->headers['x-sharenote-id'];
         if (!$uid || !is_string($uid) || !strlen($uid)) {
             $this->errorAndDie(400); // Bad request
         }

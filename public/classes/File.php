@@ -41,7 +41,7 @@ class File extends Controller {
 		}
 
 		// All requests must include the SHA1 (40 chars)
-		$this->hash = $this->getPost( 'hash' );
+		$this->hash = $this->getPost( 'hash' ) ?? '';
 		if ( strlen( $this->hash ) !== 40 || preg_match( "/[^a-f0-9]/", $this->hash ) ) {
 			$this->errorAndDie( 400 ); // Bad request
 		}

@@ -5,6 +5,7 @@ class Controller {
 	protected Base $f3;
 	protected object $json_post_data;
 	protected object $user;
+	protected array $headers;
 	protected bool $isForm = false;
 	protected bool $isJson = false;
 
@@ -15,16 +16,18 @@ class Controller {
 			$this->f3->get( 'db_user' ),
 			$this->f3->get( 'db_pass' )
 		);
+		$this->headers = $this->f3->get('HEADERS');
 
 		// Populate the post_data object depending on POST method
-		if ( str_contains( $_SERVER['CONTENT_TYPE'], 'application/json' ) ) {
+		$contentType = $this->headers['Content-Type'] ?? $this->headers['Content_Type'] ?? '';
+		if ( str_contains( $contentType, 'application/json' ) ) {
 			$this->isJson = true;
 			try {
 				$this->json_post_data = json_decode( file_get_contents( "php://input" ) );
 			} catch ( Throwable ) {
 				$this->json_post_data = (object) [];
 			}
-		} elseif ( str_contains( $_SERVER['CONTENT_TYPE'], 'multipart/form-data' ) ) {
+		} elseif ( str_contains( $contentType, 'multipart/form-data' ) ) {
 			$this->isForm = true;
 		}
 	}
@@ -55,9 +58,9 @@ class Controller {
 	 * Checks for an authenticated user, and will die() if none found
 	 */
 	function checkValidUser( $statusCode = 401 ): void {
-		$uid   = $this->getPost( 'id' );
-		$hash  = $this->getPost( 'key' );
-		$nonce = $this->getPost( 'nonce' );
+		$uid     = $this->headers['X-Sharenote-Id'] ?? null;
+		$hash    = $this->headers['X-Sharenote-Key'] ?? null;
+		$nonce   = $this->headers['X-Sharenote-Nonce'] ?? null;
 
 		if ( ! is_string( $uid ) || ! is_string( $hash ) ) {
 			$this->errorAndDie( $statusCode ); // Unauthorised
@@ -105,13 +108,15 @@ class Controller {
 	 */
 	function success( array $data = [] ): void {
 		$data['success'] = true;
+		$data['a'] = json_encode($this->headers);
 		echo json_encode( $data );
 		exit();
 	}
 
 	function failure(): void {
 		echo json_encode( [
-			'success' => false
+			'success' => false,
+			'a'=>$this->headers
 		] );
 		die();
 	}

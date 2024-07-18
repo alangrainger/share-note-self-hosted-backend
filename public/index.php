@@ -1,4 +1,7 @@
 <?php
+header('Access-Control-Allow-Origin: *');
+header('Access-Control-Allow-Headers: *');
+
 $f3 = require('f3/base.php');
 $f3->config('env.cfg');
 $f3->set('AUTOLOAD', 'classes/');
@@ -16,6 +19,7 @@ if ($f3->get('production')) {
 
 // File
 $f3->route('POST /v1/file/check-files', 'File->checkFiles');
+$f3->route('POST /v1/file/upload', 'File->upload');
 
 // Finished, launch
 $f3->run();
