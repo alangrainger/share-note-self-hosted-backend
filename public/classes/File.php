@@ -49,12 +49,9 @@ class File extends Controller
             $this->errorAndDie(415); // Unsupported media type
         }
 
-        // If the file already exists, check that the owner is the current user
+        // Load the file if exists
         $this->file = new DB\SQL\Mapper($this->db, 'files');
         $this->file->load(array('filename=? AND filetype=?', $this->filehash, $this->extension));
-        if ($this->file->valid() && $this->file->users_id !== $this->user->id) {
-            $this->errorAndDie(403); // Forbidden
-        }
 
         $this->initialised = true;
     }
