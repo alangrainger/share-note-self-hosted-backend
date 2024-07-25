@@ -54,13 +54,17 @@ class File extends Controller {
 		}
 
 		// Load the file if exists
-		$filename   = $this->getPost( 'filename' ) ?? $this->createRandomName();
+		$filename   = $this->getPost( 'filename' );
+		if (!$filename || !is_string($filename) || preg_match("/[^a-zA-Z0-9]/", $filename)) {
+			$filename = $this->createRandomName();
+		}
+		$this->filename = $filename;
 		$this->file = new DB\SQL\Mapper( $this->db, 'files' );
 		if ( $this->extension === 'html' ) {
-			$this->file->load( array( 'filename=? AND filetype=?', $filename, $this->extension ) );
+			$this->file->load( array( 'filename=? AND filetype=?', $this->filename, $this->extension ) );
 		} elseif ( $this->extension === 'css' ) {
 			$this->filename = $this->user->id;
-			$this->file->load( array( 'filename=? AND filetype=?', $filename, $this->extension ) );
+			$this->file->load( array( 'filename=? AND filetype=?', $this->filename, $this->extension ) );
 		} else {
 			$this->file->load( array( 'hash=? AND filetype=?', $this->hash, $this->extension ) );
 		}
@@ -69,7 +73,9 @@ class File extends Controller {
 	}
 
 	function createNote(): void {
-
+		$this->success( [
+			'url' => ''
+		] );
 	}
 
 	private function saveFile( $contents ): void {
@@ -90,7 +96,9 @@ class File extends Controller {
 			$this->file->created  = $date;
 		}
 		$this->file->updated = $date;
+		$this->file->hash = $this->hash;
 		$this->file->bytes   = filesize( $filename );
+
 		$this->file->save();
 	}
 
@@ -166,7 +174,7 @@ class File extends Controller {
 		$fileDb = new DB\SQL\Mapper( $this->db, 'files' );
 		$fileDb->load( array( 'hash=? AND filetype=?', $hash, $extension ) );
 		if ( $fileDb->valid() ) {
-			return $this->getUrl( $fileDb->filename, $fileDb->extension );
+			return $this->getUrl( $fileDb->filename, $fileDb->filetype );
 		}
 
 		return null;
