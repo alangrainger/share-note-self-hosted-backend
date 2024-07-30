@@ -54,12 +54,12 @@ class File extends Controller {
 		}
 
 		// Load the file if exists
-		$filename   = $this->getPost( 'filename' );
-		if (!$filename || !is_string($filename) || preg_match("/[^a-zA-Z0-9]/", $filename)) {
+		$filename = $this->getPost( 'filename' );
+		if ( ! $filename || ! is_string( $filename ) || preg_match( "/[^a-zA-Z0-9]/", $filename ) ) {
 			$filename = $this->createRandomName();
 		}
 		$this->filename = $filename;
-		$this->file = new DB\SQL\Mapper( $this->db, 'files' );
+		$this->file     = new DB\SQL\Mapper( $this->db, 'files' );
 		if ( $this->extension === 'html' ) {
 			$this->file->load( array( 'filename=? AND filetype=?', $this->filename, $this->extension ) );
 		} elseif ( $this->extension === 'css' ) {
@@ -70,12 +70,6 @@ class File extends Controller {
 		}
 
 		$this->initialised = true;
-	}
-
-	function createNote(): void {
-		$this->success( [
-			'url' => ''
-		] );
 	}
 
 	private function saveFile( $contents ): void {
@@ -96,7 +90,7 @@ class File extends Controller {
 			$this->file->created  = $date;
 		}
 		$this->file->updated = $date;
-		$this->file->hash = $this->hash;
+		$this->file->hash    = $this->hash;
 		$this->file->bytes   = filesize( $filename );
 
 		$this->file->save();
@@ -106,7 +100,7 @@ class File extends Controller {
 		$this->initFile();
 
 		// Save the file to disk and update the database
-		$this->saveFile( $this->getPost( 'content' ) );
+		$this->saveFile( file_get_contents( "php://input" ) );
 
 		// Output JSON data to return to the plugin
 		$this->success( [
@@ -159,7 +153,14 @@ class File extends Controller {
 	 * @return string
 	 */
 	function getUrl( $filename = null, $extension = null ): string {
-		return $this->f3->get( 'file_url_base' ) . $this->getSubPath( $filename, $extension );
+		$filename  = $filename ?? $this->filename;
+		$extension = $extension ?? $this->extension;
+
+		if ( $extension === 'html' ) {
+			return $this->f3->get( 'file_url_base' ) . "/{$this->getSubfolder('html')}/$filename";
+		} else {
+			return $this->f3->get( 'file_url_base' ) . $this->getSubPath( $filename, $extension );
+		}
 	}
 
 	/**
@@ -201,9 +202,43 @@ class File extends Controller {
 			'success' => true,
 			'files'   => $result,
 			'css'     => ! $css->valid() ? null : (object) [
-				'url'  => $this->getUrl(),
+				'url'  => $this->getUrl( $css->filename, $css->filetype ),
 				'hash' => $css->hash
 			]
+		] );
+	}
+
+	function createNote(): void {
+		$this->initFile();
+
+		$note     = new Note();
+		$template = $this->getPost( 'template' );
+
+		// Make replacements
+		$note->setCss( $this->f3->get( 'file_url_base' ) . "/{$this->getSubfolder('css')}/{$this->user->id}.css" );
+		$note->setWidth( $template->width ?? null );
+		$note->setTitle( $template->title ?? null );
+		$note->setMetaDescription( $template->description ?? null );
+		$note->enableMathjax( $template->mathJax ?? false );
+
+		// Add note contents
+		if ( ( $template->encrypted ?? null ) === false ) {
+			// Unencrypted plaintext contents
+			$note->addUnencryptedContents( $template->content );
+		} else {
+			// Encrypted contents
+			$note->addEncryptedData( $template->content );
+		}
+
+		foreach ( $template->elements as $el ) {
+			$note->setClassAndStyle( $el->element, $el->classes, $el->style );
+		}
+
+		// Output the note HTML to disk and update the database
+		$this->saveFile( $note->contents() );
+
+		$this->success( [
+			'url' => $this->getUrl()
 		] );
 	}
 

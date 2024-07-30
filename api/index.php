@@ -17,9 +17,13 @@ if ($f3->get('production')) {
 
 // Routes
 
-// File
+$f3->route('GET /v1/test', function () {
+	error_log('some message');
+});
+
 $f3->route('POST /v1/file/check-files', 'File->checkFiles');
 $f3->route('POST /v1/file/upload', 'File->upload');
+$f3->route('POST /v1/file/create-note', 'File->createNote');
 
 // Finished, launch
 $f3->run();
