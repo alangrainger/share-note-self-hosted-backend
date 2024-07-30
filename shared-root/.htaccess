@@ -1,0 +1,6 @@
+RewriteEngine On
+
+# Rewrite note requests without '.html' to the actual .html file
+RewriteCond %{REQUEST_FILENAME} .*/notes/.*
+RewriteCond %{REQUEST_FILENAME}.html -f
+RewriteRule !.*\.html$ %{REQUEST_FILENAME}.html [L]

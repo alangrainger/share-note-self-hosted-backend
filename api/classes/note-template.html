@@ -1,0 +1,126 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>TEMPLATE_TITLE</title>
+    TEMPLATE_OG_TITLE
+    TEMPLATE_META_DESCRIPTION
+    <link rel="icon" type="image/x-icon" href="/favicon.ico">
+    <style>
+        html,
+        body {
+            overflow: visible !important;
+        }
+
+        .view-content {
+            height: 100% !important;
+        }
+
+        .status-bar {
+            position: fixed !important;
+        }
+
+        TEMPLATE_WIDTH
+    </style>
+    <link rel="stylesheet" href="TEMPLATE_CSS">
+    <script src="TEMPLATE_ASSETS_WEBROOT/app.js"></script>
+    TEMPLATE_SCRIPTS
+</head>
+<body TEMPLATE_BODY>
+<div class="app-container">
+    <div class="horizontal-main-container">
+        <div class="workspace">
+            <div class="workspace-split mod-vertical mod-root">
+                <div class="workspace-leaf mod-active">
+                    <div class="workspace-leaf-content">
+                        <div class="view-content">
+                            <div class="markdown-reading-view" style="height:100%;width:100%;">
+                                <div TEMPLATE_PREVIEW>
+                                    <div class="markdown-preview-sizer markdown-preview-section">
+                                        <div TEMPLATE_PUSHER></div>
+                                        TEMPLATE_NOTE_CONTENT
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="status-bar">
+        <div class="status-bar-item">
+            <span class="status-bar-item-segment"><a href="https://note.sx/" target="_blank">Share Note</a> for Obsidian</span>
+            <span id="theme-mode-toggle" class="status-bar-item-segment">🌓</span>
+        </div>
+    </div>
+</div>
+<div id="encrypted-data" style="display: none">TEMPLATE_ENCRYPTED_DATA</div>
+<script>
+  // Add/remove mobile classes depending on viewport size
+  function toggleMobileClasses () {
+    const mobileClasses = ['is-mobile', 'is-phone']
+    if (window.innerWidth <= 768) {
+      // Is mobile
+      document.body.classList.add(...mobileClasses)
+    } else {
+      document.body.classList.remove(...mobileClasses)
+    }
+  }
+
+  window.addEventListener('resize', toggleMobileClasses)
+  toggleMobileClasses()
+
+  function base64ToArrayBuffer (base64) {
+    const binaryString = atob(base64)
+    const bytes = new Uint8Array(binaryString.length)
+    for (let i = 0; i < binaryString.length; i++) {
+      bytes[i] = binaryString.charCodeAt(i)
+    }
+    return bytes.buffer
+  }
+
+  async function decryptString ({ ciphertext, iv }, secret) {
+    const ivBuf = base64ToArrayBuffer(iv)
+    const aesKey = await window.crypto.subtle.importKey('raw', base64ToArrayBuffer(secret), {
+      name: 'AES-GCM',
+      length: 256
+    }, false, ['decrypt'])
+
+    const plaintext = []
+    for (const ciphertextChunk of ciphertext) {
+      const ciphertextBuf = base64ToArrayBuffer(ciphertextChunk)
+      const plaintextChunk = await window.crypto.subtle
+        .decrypt({ name: 'AES-GCM', iv: ivBuf }, aesKey, ciphertextBuf)
+      plaintext.push(new TextDecoder().decode(plaintextChunk))
+    }
+    return plaintext.join('')
+  }
+
+  /*
+   * Decrypt the original note content
+   */
+  const encryptedData = document.getElementById('encrypted-data').innerText.trim()
+  const payload = encryptedData ? JSON.parse(encryptedData) : ''
+  const secret = window.location.hash.slice(1) // Taken from the URL # parameter
+  if (payload && secret) {
+    decryptString({ ciphertext: payload.ciphertext, iv: payload.iv }, secret)
+      .then(text => {
+        // Inject the user's data
+        const data = JSON.parse(text)
+        const contentEl = document.getElementById('template-user-data')
+        if (contentEl) contentEl.outerHTML = data.content
+        document.title = data.basename
+        initDocument()
+      })
+      .catch(() => {
+        const contentEl = document.getElementById('template-user-data')
+        if (contentEl) contentEl.innerHTML = 'Unable to decrypt using this key.'
+      })
+  } else {
+    initDocument()
+  }
+</script>
+</body>
+</html>
