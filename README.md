@@ -59,6 +59,8 @@ assets_webroot=http://localhost/public/assets
 
 Edit the `data.json` file in your Obsidian Share Note plugin folder.
 
+**⚠️ After making any changes to this file, you will need to close and re-open Obsidian, otherwise Obsidian won't pick up the changes.**
+
 #### `uid` and `apiKey`
 
 Update `uid` and `apiKey` to match the `uid` and `private_key` values from your server's `env.cfg`.
