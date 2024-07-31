@@ -94,15 +94,13 @@ class Controller {
 	 */
 	function success( array $data = [] ): void {
 		$data['success'] = true;
-		$data['a']       = json_encode( $this->headers );
 		echo json_encode( $data );
 		exit();
 	}
 
 	function failure(): void {
 		echo json_encode( [
-			'success' => false,
-			'a'       => $this->headers
+			'success' => false
 		] );
 		die();
 	}
