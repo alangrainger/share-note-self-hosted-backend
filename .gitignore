@@ -1,5 +1,5 @@
 ﻿.idea
 env.cfg
-/shared-root/css
-/shared-root/files
-/shared-root/notes
+/public/css
+/public/files
+/public/notes

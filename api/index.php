@@ -5,7 +5,7 @@ header( 'Access-Control-Allow-Headers: *' );
 $f3 = require( 'f3/base.php' );
 $f3->config( 'env.cfg' );
 $f3->set( 'AUTOLOAD', 'classes/' );
-$f3->set( 'DEBUG', 1 );
+$f3->set( 'DEBUG', 0 );
 
 // Output no errors in production
 if ( $f3->get( 'production' ) ) {

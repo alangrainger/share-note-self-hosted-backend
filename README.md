@@ -1,7 +1,7 @@
 # Share Note self-hosted PHP backend
 
 - `/api/` is the API backend.
-- `/shared-root/` will be the location of uploaded files.
+- `/public/` will be the location of uploaded files.
 
 ## Installation
 
@@ -53,7 +53,7 @@ assets_webroot=http://localhost/public/assets
 
 2. Point your API web root to the `./api/` folder in this repo.
 
-3. Point your shared notes location web root to the `./shared-root/` folder in this repo.
+3. Point your shared notes location web root to the `./public/` folder in this repo.
 
 ### Plugin
 
