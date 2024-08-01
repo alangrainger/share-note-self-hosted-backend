@@ -1,11 +1,17 @@
 # Share Note self-hosted PHP backend
 
-- `/api/` is the API backend.
-- `/public/` will be the location of uploaded files.
+⚠️ **WARNING** ⚠️
+
+The API is not intended to be public facing.
+
+If you want a server that is accessible to the public, please just use [the normal Share Note service](https://note.sx/).
 
 ## Installation
 
 ### Server
+
+- `/api/` is the API backend.
+- `/public/` will be the location of uploaded files.
 
 1. Copy `./api/env.cfg.example` to `./api/env.cfg`, and update with your specific 
 configuration as follows:
