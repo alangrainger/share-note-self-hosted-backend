@@ -11,7 +11,7 @@ If you're not confident in how to do this, please just use [the normal Share Not
 
 ### Server
 
-- `/api/` is the API backend.
+- `/api/` is the API backend. I recommend you secure this against public access.
 - `/public/` will be the location of uploaded files.
 
 1. Copy `./api/env.cfg.example` to `./api/env.cfg`, and update with your specific 
