@@ -2,9 +2,9 @@
 
 ⚠️ **WARNING** ⚠️
 
-The shared notes folder can be web-facing, however the API is **not** intended to be publicly accessible and has not been security tested for such an application.
+The shared notes folder can be web-facing, but the API backend is **not** intended to be publicly accessible and has not been security tested for such an application.
 
-If you want a server that is accessible to the public, please just use [the normal Share Note service](https://note.sx/).
+If you want an upload service that is accessible to the public, please just use [the normal Share Note service](https://note.sx/).
 
 ## Installation
 
