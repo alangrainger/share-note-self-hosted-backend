@@ -2,15 +2,16 @@
 
 ⚠️ **WARNING** ⚠️
 
-The shared notes folder can be web-facing, but the API backend is **not** intended to be publicly accessible and has not been security tested for such an application.
+The API backend is provided without any warranties and has not been security tested to be publicly facing. 
+It is my strong recommendation that you secure the `/api/` folder in some fashion from public access.
 
-If you want an upload service that is accessible to the public, please just use [the normal Share Note service](https://note.sx/).
+If you're not confident in how do do this, please just use [the normal Share Note service](https://note.sx/).
 
 ## Installation
 
 ### Server
 
-- `/api/` is the API backend. **This is not intended to be publicly accessible. it must be secured in some fashion.**
+- `/api/` is the API backend. **This is not intended to be publicly accessible. it should be secured in some fashion.**
 - `/public/` will be the location of uploaded files.
 
 1. Copy `./api/env.cfg.example` to `./api/env.cfg`, and update with your specific 
