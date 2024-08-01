@@ -5,6 +5,8 @@ I recommend that you secure the `/api/` folder against public access.
 
 If you're not confident in how to do this, please just use [the normal Share Note service](https://note.sx/).
 
+The backend uses [Fat-Free Framework](https://fatfreeframework.com/).
+
 ## Installation
 
 ### Server
