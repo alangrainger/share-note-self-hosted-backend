@@ -14,7 +14,9 @@ If you want an upload service that is accessible to the public, please just use 
 - `/public/` will be the location of uploaded files.
 
 1. Copy `./api/env.cfg.example` to `./api/env.cfg`, and update with your specific 
-configuration as follows:
+configuration as below.
+2. Point your API web root to the `./api/` folder in this repo.
+3. Point your shared notes location web root to the `./public/` folder in this repo.
 
 #### `uid` and `private_key`
 
@@ -56,10 +58,6 @@ of the above location. Example:
 ```
 assets_webroot=http://localhost/public/assets
 ```
-
-2. Point your API web root to the `./api/` folder in this repo.
-
-3. Point your shared notes location web root to the `./public/` folder in this repo.
 
 ### Plugin
 
