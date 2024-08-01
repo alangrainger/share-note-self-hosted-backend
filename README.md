@@ -2,7 +2,7 @@
 
 ⚠️ **WARNING** ⚠️
 
-The API backend is provided without any warranties and has not been security tested to be publicly facing. 
+The API backend is provided without any warranties and has not received extensive security testing. 
 I recommend that you secure the `/api/` folder in some fashion from public access.
 
 If you're not confident in how to do this, please just use [the normal Share Note service](https://note.sx/).
