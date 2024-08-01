@@ -3,15 +3,15 @@
 ⚠️ **WARNING** ⚠️
 
 The API backend is provided without any warranties and has not been security tested to be publicly facing. 
-It is my strong recommendation that you secure the `/api/` folder in some fashion from public access.
+I recommend that you secure the `/api/` folder in some fashion from public access.
 
-If you're not confident in how do do this, please just use [the normal Share Note service](https://note.sx/).
+If you're not confident in how to do this, please just use [the normal Share Note service](https://note.sx/).
 
 ## Installation
 
 ### Server
 
-- `/api/` is the API backend. **This is not intended to be publicly accessible. it should be secured in some fashion.**
+- `/api/` is the API backend.
 - `/public/` will be the location of uploaded files.
 
 1. Copy `./api/env.cfg.example` to `./api/env.cfg`, and update with your specific 
