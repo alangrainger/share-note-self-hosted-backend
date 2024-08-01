@@ -30,8 +30,6 @@ class File extends Controller {
 
 	function __construct() {
 		parent::__construct();
-		// All file calls need a valid user. Will die() if not authenticated.
-		$this->checkValidUser();
 	}
 
 	function initFile(): void {
@@ -115,9 +113,8 @@ class File extends Controller {
 			unlink( $this->getFilePath() );
 			// Delete the record from the database
 			$this->file->erase();
-			$this->success();
 		}
-		$this->failure();
+		$this->success();
 	}
 
 	/**

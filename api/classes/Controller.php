@@ -9,12 +9,16 @@ class Controller {
 
 	function __construct() {
 		$this->f3      = Base::instance();
+		$this->headers = $this->f3->get( 'HEADERS' );
+
+		// All API calls need a valid user. Will die() if not authenticated.
+		$this->checkValidUser();
+
 		$this->db      = new DB\SQL(
 			"mysql:host={$this->f3->get('db_host')};port=3306;dbname={$this->f3->get('db_name')}",
 			$this->f3->get( 'db_user' ),
 			$this->f3->get( 'db_pass' )
 		);
-		$this->headers = $this->f3->get( 'HEADERS' );
 
 		// Populate the post_data object depending on POST method
 		if ( str_contains( $this->headers['Content-Type'] ?? '', 'application/json' ) ) {
@@ -28,12 +32,6 @@ class Controller {
 
 	function getPost( $property ) {
 		return $this->json_post_data->{$property} ?? null;
-	}
-
-	function shortHash( $data ): string {
-		$sha = hash( 'sha256', $data );
-
-		return substr( $sha, 0, 32 );
 	}
 
 	function now(): string {
@@ -96,12 +94,5 @@ class Controller {
 		$data['success'] = true;
 		echo json_encode( $data );
 		exit();
-	}
-
-	function failure(): void {
-		echo json_encode( [
-			'success' => false
-		] );
-		die();
 	}
 }

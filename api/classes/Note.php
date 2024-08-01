@@ -22,7 +22,7 @@ class Note
 
 	function __construct()
 	{
-		$this->html = file_get_contents('classes/note-template.html');
+		$this->html = file_get_contents('note-template.html');
 		$f3 = Base::instance();
 		$this->replace(self::assetsWebroot, $f3->get('assets_webroot'));
 	}
