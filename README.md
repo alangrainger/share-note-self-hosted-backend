@@ -1,9 +1,7 @@
 # Share Note self-hosted PHP backend
 
-⚠️ **WARNING** ⚠️
-
 The API backend is provided without any warranties and has not received extensive security testing. 
-I recommend that you secure the `/api/` folder in some fashion from public access.
+I recommend that you secure the `/api/` folder against public access.
 
 If you're not confident in how to do this, please just use [the normal Share Note service](https://note.sx/).
 
@@ -11,7 +9,7 @@ If you're not confident in how to do this, please just use [the normal Share Not
 
 ### Server
 
-- `/api/` is the API backend. I recommend you secure this against public access.
+- `/api/` is the API backend.
 - `/public/` will be the location of uploaded files.
 
 1. Copy `./api/env.cfg.example` to `./api/env.cfg`, and update with your specific 
