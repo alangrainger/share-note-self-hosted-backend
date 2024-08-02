@@ -9,6 +9,10 @@ The backend uses [Fat-Free Framework](https://fatfreeframework.com/).
 
 ## Installation
 
+### Database
+
+The code is setup to use MySQL. Import the [schema.sql file](https://github.com/alangrainger/share-note-self-hosted-backend/blob/main/schema.sql) into your database.
+
 ### Server
 
 - `/api/` is the API backend.
