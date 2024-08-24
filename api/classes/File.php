@@ -253,7 +253,7 @@ class File extends Controller {
 	function createRandomName( $extension = null ) {
 		$extension = $extension ?? $this->extension;
 		$length    = $extension === 'html' ? 8 : 20;
-		$chars     = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
+		$chars     = '0123456789abcdefghijklmnopqrstuvwxyz';
 		$name      = '';
 		for ( $i = 0; $i < $length; $i ++ ) {
 			$name .= $chars[ rand( 0, strlen( $chars ) - 1 ) ];
