@@ -82,7 +82,6 @@ class File extends Controller {
 		$date = $this->now();
 		if ( ! $this->file->valid() ) {
 			// This is a new record
-			$this->file->users_id = $this->user->id;
 			$this->file->filename = $this->filename;
 			$this->file->filetype = strtolower( $this->extension );
 			$this->file->created  = $date;

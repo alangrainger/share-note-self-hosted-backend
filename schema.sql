@@ -23,7 +23,6 @@ SET time_zone = "+00:00";
 
 CREATE TABLE `files` (
                          `id` int NOT NULL,
-                         `users_id` int NOT NULL,
                          `filename` char(32) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL,
                          `filetype` varchar(10) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL,
                          `hash` char(40) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL,
@@ -41,7 +40,6 @@ CREATE TABLE `files` (
 ALTER TABLE `files`
     ADD PRIMARY KEY (`id`),
   ADD UNIQUE KEY `filename_filetype` (`filename`,`filetype`) USING BTREE,
-  ADD KEY `users_id` (`users_id`),
   ADD KEY `created` (`created`),
   ADD KEY `filename` (`filename`),
   ADD KEY `filetype` (`filetype`),
