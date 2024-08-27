@@ -38,9 +38,10 @@ class File extends Controller {
 			return;
 		}
 
-		// All requests must include the SHA1 (40 chars)
+		// All upload requests must include the SHA1 (40 chars)
 		$this->hash = $this->headers['X-Sharenote-Hash'] ?? $this->getPost( 'hash' ) ?? '';
-		if ( strlen( $this->hash ) !== 40 || preg_match( "/[^a-f0-9]/", $this->hash ) ) {
+		if ( $this->f3->get( 'PARAMS.0' ) !== '/v1/file/delete' &&
+		     ( strlen( $this->hash ) !== 40 || preg_match( "/[^a-f0-9]/", $this->hash ) ) ) {
 			$this->errorAndDie( 400 ); // Bad request
 		}
 
@@ -249,7 +250,7 @@ class File extends Controller {
 		};
 	}
 
-	function createRandomName( $extension = null ) {
+	function createRandomName( $extension = null ): string {
 		$extension = $extension ?? $this->extension;
 		$length    = $extension === 'html' ? 8 : 20;
 		$chars     = '0123456789abcdefghijklmnopqrstuvwxyz';

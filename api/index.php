@@ -20,6 +20,7 @@ if ( $f3->get( 'production' ) ) {
 $f3->route( 'POST /v1/file/check-files', 'File->checkFiles' );
 $f3->route( 'POST /v1/file/upload', 'File->upload' );
 $f3->route( 'POST /v1/file/create-note', 'File->createNote' );
+$f3->route( 'POST /v1/file/delete', 'File->delete' );
 
 // User routes are not used in the self-hosted server.
 // Please manually set the `uid` and `private_key` in your server env.cfg,
