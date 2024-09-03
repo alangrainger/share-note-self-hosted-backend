@@ -256,7 +256,13 @@ class File extends Controller {
 		$chars     = '0123456789abcdefghijklmnopqrstuvwxyz';
 		$name      = '';
 		for ( $i = 0; $i < $length; $i ++ ) {
-			$name .= $chars[ rand( 0, strlen( $chars ) - 1 ) ];
+			try {
+				$rand = random_int( 0, strlen( $chars ) - 1 );
+			} catch ( \Throwable $e ) {
+				// No acceptable source of randomness, fallback to completely insecure rand()
+				$rand = rand( 0, strlen( $chars ) - 1 );
+			}
+			$name .= $chars[ $rand ];
 		}
 
 		return $name;
