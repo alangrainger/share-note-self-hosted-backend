@@ -12,6 +12,8 @@ services:
       - PRODUCTION=${PRODUCTION}
       - UID=${UID}
       - PRIVATE_KEY=${PRIVATE_KEY}
+      - FILE_URL_BASE=${FILE_URL_BASE:http://localhost:8080/public}
+      - ASSETS_WEBROOT=${ASSETS_WEBROOT:http://localhost:8080/public/assets}
     depends_on:
       - db
 
