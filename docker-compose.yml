@@ -16,6 +16,8 @@ services:
       - ASSETS_WEBROOT=${ASSETS_WEBROOT}
     depends_on:
       - db
+    volumes:
+      - notes:/var/www/html/public/notes
 
   db:
     image: mysql:8.0
@@ -30,3 +32,4 @@ services:
 
 volumes:
   mysql_data:
+  notes:
