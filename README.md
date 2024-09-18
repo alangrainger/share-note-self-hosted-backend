@@ -66,7 +66,7 @@ assets_webroot=http://localhost/public/assets
 
 #### Troubleshooting
 
-If you're receiving API errors, try opening the file `http://localhost/api/v1/account/get-key`. If you can't load that endpoint then your `.htaccess` is not set up correctly.
+If you're receiving API errors, try opening the URL `http://localhost/api/v1/account/get-key`. If you can't load that endpoint in your browser then your `.htaccess` is probably not set up correctly.
 
 ### Plugin
 
