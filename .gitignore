@@ -3,3 +3,4 @@ env.cfg
 /public/css
 /public/files
 /public/notes
+.env

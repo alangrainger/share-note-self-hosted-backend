@@ -9,6 +9,18 @@ The backend uses [Fat-Free Framework](https://fatfreeframework.com/).
 
 ## Installation
 
+## Docker Compose Setup
+
+1. Copy `.env.example` to `.env` and update the values.
+
+2. Run the following command to start the services:
+
+   ```sh
+   docker-compose up -d
+   ```
+
+3. Access the application at `http://localhost:8080` (or the port you specified).
+
 ### Database
 
 The code is setup to use MySQL. Import the [schema.sql file](https://github.com/alangrainger/share-note-self-hosted-backend/blob/main/schema.sql) into your database.
