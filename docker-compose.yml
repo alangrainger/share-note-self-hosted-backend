@@ -1,11 +1,9 @@
 services:
   app:
+    image: ghcr.io/alangrainger/share-note-self-hosted-backend
     build: .
     ports:
       - "8080:80"
-    volumes:
-      - ./api:/var/www/html/api
-      - ./public:/var/www/html/public
     environment:
       - MYSQL_HOST=${MYSQL_HOST}
       - MYSQL_DATABASE=${MYSQL_DATABASE}

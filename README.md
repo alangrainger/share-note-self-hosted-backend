@@ -9,7 +9,7 @@ The backend uses [Fat-Free Framework](https://fatfreeframework.com/).
 
 ## Installation
 
-## Docker Compose Setup
+### Docker Compose Setup
 
 1. Copy `.env.example` to `.env` and update the values.
 
