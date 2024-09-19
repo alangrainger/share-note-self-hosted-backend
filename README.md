@@ -11,13 +11,16 @@ The backend uses [Fat-Free Framework](https://fatfreeframework.com/).
 
 ### Docker Compose Setup
 
+*This Docker setup was created with thanks by [@tristandb](https://github.com/tristandb). I don't have the skill
+to spot if there are any issues with it, so please use at your own risk.*
+
 1. Copy `.env.example` to `.env` and update the values.
 
 2. Run the following command to start the services:
 
-   ```sh
-   docker-compose up -d
-   ```
+```sh
+docker-compose up -d
+```
 
 3. Access the application at `http://localhost:8080` (or the port you specified).
 
