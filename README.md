@@ -1,5 +1,9 @@
 # Share Note self-hosted PHP backend
 
+For a Python backend, see here: https://github.com/tannercollin/sharenote-py Thanks to [@tannercollin](https://github.com/tannercollin)!
+
+---
+
 The API backend is provided without any warranties and has not received extensive security testing. 
 I recommend that you secure the `/api/` folder against public access.
 
